@@ -24,7 +24,7 @@ zarf_version = "v0.26.3"
 
 ###########################################################
 #################### EKS Config ###########################
-# renovate: datasource=github-tags depName=aws/eks-distro extractVersion=^v(?<version>.*)$
+# renovate: datasource=github-tags depName=aws/eks-distro extractVersion=^v?(?<version>\\d+\\.\\d+)$
 cluster_version = "1.26"
 
 ###########################################################
@@ -107,7 +107,7 @@ cluster_autoscaler_helm_config = {
     },
     {
       name = "image.tag"
-      # renovate: datasource=docker depName=registry.k8s.io/autoscaling/cluster-autoscaler
+      # renovate: datasource=docker depName=registry.k8s.io/autoscaling/cluster-autoscaler repository=registry.k8s.io
       value = "v1.27.1"
     }
   ]
