@@ -91,7 +91,7 @@ amazon_eks_aws_ebs_csi_driver_config = {
 enable_aws_node_termination_handler = true
 aws_node_termination_handler_helm_config = {
   wait = false
-  # renovate: datasource=helm depName=aws-node-termination-handler repository=https://gallery.ecr.aws/aws-ec2/helm/aws-node-termination-handler
+  # renovate: datasource=docker depName=gallery.ecr.aws/aws-ec2/helm/aws-node-termination-handler
   version = "v0.21.0"
 }
 
