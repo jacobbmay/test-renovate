@@ -91,7 +91,7 @@ amazon_eks_aws_ebs_csi_driver_config = {
 enable_aws_node_termination_handler = true
 aws_node_termination_handler_helm_config = {
   wait = false
-  # Don't know where this one comes from versioning doesn't match AWS repo at all: https://github.com/aws/aws-node-termination-handler
+  # renovate: datasource=helm depName=aws-node-termination-handler repository=https://aws.github.io/eks-charts
   version = "v0.21.0"
 }
 
