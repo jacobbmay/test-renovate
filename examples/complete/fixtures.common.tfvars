@@ -24,8 +24,8 @@ zarf_version = "v0.26.3"
 
 ###########################################################
 #################### EKS Config ###########################
-# renovate: datasource=github-tags depName=aws/eks-distro extractVersion=^v?(?<version>\\d+-\\d+)$
-cluster_version = "1-26"
+# renovate: datasource=github-tags depName=aws/eks-distro extractVersion=^v?(?<version>\\d+-\\d+)
+cluster_version = "1.26"
 
 ###########################################################
 ############## Big Bang Dependencies ######################
