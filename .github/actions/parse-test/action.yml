@@ -45,5 +45,5 @@ runs:
           printf "test_distros=""\n" >> $GITHUB_OUTPUT
         else
           printf "test_distros=%s\n" "$(jq --compact-output --null-input '$ARGS.positional' --args -- "${TEST_DISTROS[@]}")" >> $GITHUB_OUTPUT
-          printf "test_distros= ${TEST_DISTROS[@]}"
+          printf "test_distros=%s" "${TEST_DISTROS[@]}"
         fi
