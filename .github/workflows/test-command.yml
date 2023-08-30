@@ -1,17 +1,13 @@
-# Attribution for a bunch of this goes to CloudPosse
-# https://github.com/cloudposse/actions/blob/master/.github/workflows/test-command.yml
+name: Test Dispatch
 
-name: test
 on:
   repository_dispatch:
     types: [test-command]
-  push:
-    branches:
-      - main
 
 permissions:
   id-token: write
-  contents: read
+  contents: write # For executing the repository_dispatch event
+  pull-requests: write # For doing the emoji reaction on a PR comment
 
 defaults:
   run:
@@ -19,18 +15,19 @@ defaults:
     shell: bash -e -o pipefail {0}
 
 jobs:
-  # Parse the command, so we can decide which tests to run. Examples: "/test all", "/test validate", "/test e2e"
+  # Parse the command, so we can decide which tests to run.
+  # Valid commands: "/test all", "/test ubuntu", "/test rhel"
   # We can do as many of these as we want to get as granular as we want.
   parse:
     runs-on: ubuntu-latest
     outputs:
       run-ping: ${{ steps.parse.outputs.run-ping }}
-      run-e2e: ${{ steps.parse.outputs.run-e2e }}
+      test-distros: ${{ steps.parse.outputs.test-distros }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
         with:
-          token: ${{ secrets.PAT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           repository: ${{ github.event.client_payload.pull_request.head.repo.full_name || github.repository }}
           ref: ${{ github.event.client_payload.pull_request.head.ref || github.ref_name }}
       - name: Parse Args
@@ -39,19 +36,18 @@ jobs:
 
   # Update the comment that triggered the /test command to show the run url
   comment:
-    if: github.event_name == 'repository_dispatch'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
         with:
-          token: ${{ secrets.PAT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           repository: ${{ github.event.client_payload.pull_request.head.repo.full_name || github.repository }}
           ref: ${{ github.event.client_payload.pull_request.head.ref || github.ref_name }}
       - name: Update Comment
         uses: ./.github/actions/comment
         with:
-          token: ${{ secrets.PAT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
   # Do a simple ping/pong status update to validate things are working
   ping:
@@ -62,52 +58,33 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v3
         with:
-          token: ${{ secrets.PAT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           repository: ${{ github.event.client_payload.pull_request.head.repo.full_name || github.repository }}
           ref: ${{ github.event.client_payload.pull_request.head.ref || github.ref_name }}
       - name: Ping Test
         uses: ./.github/actions/ping
         with:
-          token: ${{ secrets.PAT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-  # Run the E2E tests on the commercial account
-  e2e-commercial:
+  test-dispatch:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        test-distros: ${{ fromJson(needs.parse.outputs.test-distros) }}
+
+    name: Test ${{ matrix.test-distros }} AMI
+
     needs: parse
-    if: needs.parse.outputs.run-e2e == 'true'
+    if: ${{ needs.parse.outputs.test-distros != "" }}
+
     steps:
-      - name: Checkout Repo
+      - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          token: ${{ secrets.PAT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           repository: ${{ github.event.client_payload.pull_request.head.repo.full_name || github.repository }}
           ref: ${{ github.event.client_payload.pull_request.head.ref || github.ref_name }}
-      - name: Run E2E Tests
-        uses: ./.github/actions/e2e
-        with:
-          token: ${{ secrets.PAT }}
-          role-to-assume: ${{ secrets.AWS_COMMERCIAL_ROLE_TO_ASSUME }}
-          region: us-east-1
-          region2: us-east-2
-          github-context: "test / e2e-commercial (${{github.event_name}})"
 
-  # Run the E2E tests on the govcloud account
-  e2e-govcloud:
-    runs-on: ubuntu-latest
-    needs: parse
-    if: needs.parse.outputs.run-e2e == 'true'
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.PAT }}
-          repository: ${{ github.event.client_payload.pull_request.head.repo.full_name || github.repository }}
-          ref: ${{ github.event.client_payload.pull_request.head.ref || github.ref_name }}
-      - name: Run E2E Tests
-        uses: ./.github/actions/e2e
-        with:
-          token: ${{ secrets.PAT }}
-          role-to-assume: ${{ secrets.AWS_GOVCLOUD_ROLE_TO_ASSUME }}
-          region: us-gov-east-1
-          region2: us-gov-west-1
-          github-context: "test / e2e-govcloud (${{github.event_name}})"
+      - name: Test Matrix ${{ matrix.test-distros }}
+        run: echo "Current matrix - ${{ matrix.test-distros }}"
