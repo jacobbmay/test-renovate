@@ -76,7 +76,7 @@ jobs:
     name: Test ${{ matrix.test-distros }} AMI
 
     needs: parse
-    if: ${{ needs.parse.outputs.test-distros != "" }}
+    if: ${{ needs.parse.outputs.test-distros != '' }}
 
     steps:
       - name: Checkout repository
