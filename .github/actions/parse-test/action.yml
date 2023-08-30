@@ -33,7 +33,7 @@ runs:
           printf "ping=false\n" >> $GITHUB_OUTPUT
         fi
         if printf "%s" "${ARGS^^}" | grep -qE '\bALL\b'; then
-          TEST_DISTROS=$DISTROS
+          TEST_DISTROS+=$DISTROS
         else
           for distro in "${DISTROS[@]}"; do
             if printf "%s" "${ARGS^^}" | grep -qE "\b${distro}\b"; then
