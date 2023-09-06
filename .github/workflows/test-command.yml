@@ -69,15 +69,13 @@ jobs:
 
   test-dispatch:
     runs-on: ubuntu-latest
-
+    if: ${{ needs.parse.outputs.test-distros != '' }}
+    needs: parse
     strategy:
       matrix:
         test-distros: ${{ fromJson(needs.parse.outputs.test-distros) }}
 
     name: Test ${{ matrix.test-distros }} AMI
-
-    needs: parse
-    if: ${{ needs.parse.outputs.test-distros != '' }}
 
     steps:
       - name: Checkout repository
