@@ -195,7 +195,7 @@ locals {
 ####################### VPC ###############################
 
 module "vpc" {
-  source = "git::https://github.com/defenseunicorns/terraform-aws-uds-vpc.git?ref=v0.0.2-alpha"
+  source = "git::https://github.com/defenseunicorns/terraform-aws-uds-vpc.git?ref=v0.1.5"
 
   name                  = local.vpc_name
   vpc_cidr              = var.vpc_cidr
@@ -235,7 +235,7 @@ data "aws_ami" "amazonlinux2" {
 }
 
 module "bastion" {
-  source = "git::https://github.com/defenseunicorns/terraform-aws-uds-bastion.git?ref=v0.0.2-alpha"
+  source = "git::https://github.com/defenseunicorns/terraform-aws-uds-bastion.git?ref=v0.0.11"
 
   enable_bastion_terraform_permissions = true
 
@@ -270,7 +270,7 @@ module "bastion" {
 ###########################################################
 ################### EKS Cluster ###########################
 module "eks" {
-  source = "git::https://github.com/defenseunicorns/terraform-aws-uds-eks.git?ref=v0.0.1-alpha"
+  source = "git::https://github.com/defenseunicorns/terraform-aws-uds-eks.git?ref=v0.0.12"
 
   name                            = local.cluster_name
   aws_region                      = var.region
@@ -357,7 +357,7 @@ module "key_pair" {
 
 module "ebs_kms_key" {
   source  = "terraform-aws-modules/kms/aws"
-  version = "~> 1.5"
+  version = "~> 2.0"
 
   count = var.keycloak_enabled ? 1 : 0
 

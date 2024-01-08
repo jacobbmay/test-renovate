@@ -132,7 +132,7 @@ jobs:
 
       # Checkout the code from GitHub Pull Request
       - name: "Checkout the code"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT }}
           repository: ${{ github.event.client_payload.pull_request.head.repo.full_name || github.repository }}
@@ -188,7 +188,7 @@ jobs:
           make autoformat || true
 
       - name: Commit and push changes
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           skip_checkout: true
 
