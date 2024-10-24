@@ -20,12 +20,12 @@ secondary_cidr_blocks = ["100.64.0.0/16"] #https://aws.amazon.com/blogs/containe
 bastion_ssh_user     = "ec2-user" # local user in bastion used to ssh
 bastion_ssh_password = "my-password"
 # renovate: datasource=github-tags depName=defenseunicorns/zarf
-zarf_version = "v0.26.3"
+zarf_version = "v0.42.0"
 
 ###########################################################
 #################### EKS Config ###########################
 # renovate: datasource=endoflife-date depName=amazon-eks versioning=loose extractVersion=^(?<version>.*)-eks.+$
-cluster_version = "1.26"
+cluster_version = "1.31"
 
 ###########################################################
 ############## Big Bang Dependencies ######################
@@ -92,14 +92,14 @@ enable_aws_node_termination_handler = true
 aws_node_termination_handler_helm_config = {
   wait = false
   # renovate: datasource=docker depName=public.ecr.aws/aws-ec2/helm/aws-node-termination-handler
-  version = "v0.21.0"
+  version = "v0.24.1"
 }
 
 enable_cluster_autoscaler = true
 cluster_autoscaler_helm_config = {
   wait = false
   # renovate: datasource=github-tags depName=kubernetes/autoscaler extractVersion=^cluster-autoscaler-chart-(?<version>.*)$
-  version = "v9.28.0"
+  version = "v9.43.1"
   set = [
     {
       name  = "extraArgs.expander"
@@ -108,7 +108,7 @@ cluster_autoscaler_helm_config = {
     {
       name = "image.tag"
       # renovate: datasource=github-tags depName=kubernetes/autoscaler extractVersion=^cluster-autoscaler-(?<version>.*)$
-      value = "v1.27.1"
+      value = "v1.31.0"
     }
   ]
 }
@@ -117,14 +117,14 @@ enable_metrics_server = true
 metrics_server_helm_config = {
   wait = false
   # renovate: datasource=github-tags depName=kubernetes-sigs/metrics-server extractVersion=^metrics-server-helm-chart-(?<version>.*)$
-  version = "v3.10.0"
+  version = "v3.12.2"
 }
 
 enable_calico = true
 calico_helm_config = {
   wait = false
   # renovate: datasource=github-tags depName=projectcalico/calico
-  version = "v3.25.1"
+  version = "v3.28.2"
 }
 
 ######################################################
