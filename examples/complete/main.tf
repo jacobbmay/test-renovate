@@ -345,7 +345,7 @@ module "eks" {
 
 module "key_pair" {
   source  = "terraform-aws-modules/key-pair/aws"
-  version = "~> 2.0"
+  version = "~> 3.0"
 
   count = var.keycloak_enabled ? 1 : 0
 
@@ -357,7 +357,7 @@ module "key_pair" {
 
 module "ebs_kms_key" {
   source  = "terraform-aws-modules/kms/aws"
-  version = "~> 1.5"
+  version = "~> 4.0"
 
   count = var.keycloak_enabled ? 1 : 0
 
